@@ -3,6 +3,25 @@
 
 	let fileInput: HTMLInputElement;
 	let isDragging = $state(false);
+	let pageCount = $state(0);
+
+	async function selectFile(file?: File) {
+		pageCount = 0;
+		selectDocumentFile(file);
+
+		if (!selectedDocument.file) {
+			return;
+		}
+
+		try {
+			const { loadPdf } = await import('$lib/pdf-reader');
+			const pdf = await loadPdf(selectedDocument.file);
+
+			pageCount = pdf.numPages;
+		} catch {
+			selectedDocument.error = 'The selected PDF could not be read.';
+		}
+	}
 
 	function selectFromInput(event: Event) {
 		const input = event.currentTarget;
@@ -11,14 +30,14 @@
 			return;
 		}
 
-		selectDocumentFile(input.files?.[0]);
+		selectFile(input.files?.[0]);
 		input.value = '';
 	}
 
 	function selectFromDrop(event: DragEvent) {
 		event.preventDefault();
 		isDragging = false;
-		selectDocumentFile(event.dataTransfer?.files[0]);
+		selectFile(event.dataTransfer?.files[0]);
 	}
 </script>
 
@@ -55,7 +74,15 @@
 	</button>
 
 	{#if selectedDocument.file}
-		<p class="mt-3 mb-0 text-center" aria-live="polite">Selected: {selectedDocument.file.name}</p>
+		<p class="mt-3 mb-0 text-center" aria-live="polite">
+			Selected: {selectedDocument.file.name}
+			{#if pageCount > 0}
+				<span class="text-body-secondary">
+					({pageCount}
+					{pageCount === 1 ? 'page' : 'pages'})
+				</span>
+			{/if}
+		</p>
 	{/if}
 
 	{#if selectedDocument.error}
