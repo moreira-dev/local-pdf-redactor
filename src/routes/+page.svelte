@@ -1,27 +1,11 @@
 <script lang="ts">
-	import { selectDocumentFile, selectedDocument } from '$lib/document.svelte';
+	import PagePreview from '$lib/components/pdf/PagePreview.svelte';
+	import { DocumentState } from '$lib/state/document.svelte';
+
+	const doc = new DocumentState();
 
 	let fileInput: HTMLInputElement;
 	let isDragging = $state(false);
-	let pageCount = $state(0);
-
-	async function selectFile(file?: File) {
-		pageCount = 0;
-		selectDocumentFile(file);
-
-		if (!selectedDocument.file) {
-			return;
-		}
-
-		try {
-			const { loadPdf } = await import('$lib/pdf-reader');
-			const pdf = await loadPdf(selectedDocument.file);
-
-			pageCount = pdf.numPages;
-		} catch {
-			selectedDocument.error = 'The selected PDF could not be read.';
-		}
-	}
 
 	function selectFromInput(event: Event) {
 		const input = event.currentTarget;
@@ -30,14 +14,14 @@
 			return;
 		}
 
-		selectFile(input.files?.[0]);
+		doc.select(input.files?.[0]);
 		input.value = '';
 	}
 
 	function selectFromDrop(event: DragEvent) {
 		event.preventDefault();
 		isDragging = false;
-		selectFile(event.dataTransfer?.files[0]);
+		doc.select(event.dataTransfer?.files[0]);
 	}
 </script>
 
@@ -48,13 +32,7 @@
 <section>
 	<h1 class="h2 mb-4 text-center">Choose a PDF to redact</h1>
 
-	<input
-		bind:this={fileInput}
-		class="visually-hidden"
-		type="file"
-		accept="application/pdf"
-		onchange={selectFromInput}
-	/>
+	<input bind:this={fileInput} class="visually-hidden" type="file" accept="application/pdf" onchange={selectFromInput} />
 
 	<button
 		class:bg-primary-subtle={isDragging}
@@ -73,19 +51,27 @@
 		<span class="d-block mt-2 text-body-secondary">or choose a file from your device</span>
 	</button>
 
-	{#if selectedDocument.file}
+	{#if doc.file}
 		<p class="mt-3 mb-0 text-center" aria-live="polite">
-			Selected: {selectedDocument.file.name}
-			{#if pageCount > 0}
+			Selected: {doc.file.name}
+			{#if doc.pages.length > 0}
 				<span class="text-body-secondary">
-					({pageCount}
-					{pageCount === 1 ? 'page' : 'pages'})
+					({doc.pages.length}
+					{doc.pages.length === 1 ? 'page' : 'pages'})
 				</span>
 			{/if}
 		</p>
 	{/if}
 
-	{#if selectedDocument.error}
-		<p class="alert alert-danger mt-3 mb-0" role="alert">{selectedDocument.error}</p>
+	{#if doc.error}
+		<p class="alert alert-danger mt-3 mb-0" role="alert">{doc.error}</p>
+	{/if}
+
+	{#if doc.pages.length > 0}
+		<div class="mt-4">
+			{#each doc.pages as page (page.pageNumber)}
+				<PagePreview {page} />
+			{/each}
+		</div>
 	{/if}
 </section>
