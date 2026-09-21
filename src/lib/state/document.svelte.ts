@@ -1,12 +1,12 @@
 import type { PDFPageProxy } from 'pdfjs-dist';
 import { findPIIByDeterministicRules } from '$lib/detection/rules';
 import { getTextLines } from '$lib/pdf/text';
-import type { PIIDetection } from '$lib/types';
+import type { PIIData } from '$lib/types';
 
 export class DocumentState {
 	file = $state<File | null>(null);
 	pages = $state.raw<PDFPageProxy[]>([]);
-	detections = $state<PIIDetection[]>([]);
+	detections = $state<PIIData[]>([]);
 	error = $state<string | null>(null);
 
 	numPages = $state(0);
@@ -36,8 +36,8 @@ export class DocumentState {
 		}
 	}
 
-	async detect(pages: PDFPageProxy[]): Promise<PIIDetection[]> {
-		const detections: PIIDetection[] = [];
+	async detect(pages: PDFPageProxy[]): Promise<PIIData[]> {
+		const detections: PIIData[] = [];
 
 		for (const page of pages) {
 			const lines = await getTextLines(page);

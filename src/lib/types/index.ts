@@ -23,19 +23,20 @@ export interface TextLine {
 	pieces: TextPiece[];
 }
 
-export interface PIIDetection {
-	pageNumber: number;
-	lineIndex: number;
-	start: number;
-	end: number;
-	label: string;
-	text: string;
-}
-
 export interface Box {
 	pageNumber: number;
 	x: number;
 	y: number;
 	width: number;
 	height: number;
+}
+
+export interface PIIData {
+	pageNumber: number;
+	lineIndex: number;
+	firstCharacterPosition: number;
+	lastCharacterPosition: number;
+	category: string;
+	text: string;
+	highlightArea: Box;
 }

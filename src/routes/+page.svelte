@@ -76,7 +76,7 @@
 	{#if doc.pages.length > 0}
 		<div class="mt-4">
 			{#each doc.pages as page (page.pageNumber)}
-				<PagePreview {page} />
+				<PagePreview {page} detections={doc.detections.filter((detection) => detection.pageNumber === page.pageNumber)} />
 			{/each}
 		</div>
 	{/if}
