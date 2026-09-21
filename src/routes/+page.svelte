@@ -1,6 +1,18 @@
 <script lang="ts">
+	import { asset } from '$app/paths';
 	import PagePreview from '$lib/components/pdf/PagePreview.svelte';
 	import { DocumentState } from '$lib/state/document.svelte';
+
+	interface SamplePdf {
+		fileName: string;
+		url: string;
+	}
+
+	const samplePayslip: SamplePdf = { fileName: 'payslip.pdf', url: asset('/samples/payslip.pdf') };
+	const sampleMedicalCertificate: SamplePdf = {
+		fileName: 'medical-certificate.pdf',
+		url: asset('/samples/medical-certificate.pdf'),
+	};
 
 	const documentState = new DocumentState();
 
@@ -27,6 +39,23 @@
 		}
 	}
 
+	async function handleSampleSelected(sample: SamplePdf) {
+		try {
+			const response = await fetch(sample.url);
+
+			if (!response.ok) {
+				throw new Error(`Can't read the file. Error ${response.status}.`);
+			}
+
+			const blob = await response.blob();
+
+			documentState.select(new File([blob], sample.fileName, { type: 'application/pdf' }));
+		} catch (error) {
+			const message = error instanceof Error ? error.message : error;
+			documentState.error = 'The sample PDF could not be loaded: ' + message;
+		}
+	}
+
 	function createRedactedFileName(fileName: string): string {
 		if (fileName.toLowerCase().endsWith('.pdf')) {
 			fileName = fileName.slice(0, -4);
@@ -45,7 +74,7 @@
 		link.download = fileName;
 		link.click();
 
-		URL.revokeObjectURL(url)
+		URL.revokeObjectURL(url);
 	}
 
 	async function redactAndDownload() {
@@ -96,6 +125,21 @@
 		<span class="d-block fs-4 fw-semibold">Drop a PDF here</span>
 		<span class="d-block mt-2 text-body-secondary">or choose a file from your device</span>
 	</button>
+
+	<p class="mt-2 mb-0 text-center text-body-secondary">
+		See an example with a
+		<button class="btn btn-link p-0 align-baseline" type="button" onclick={() => handleSampleSelected(samplePayslip)}>
+			sample payslip
+		</button>
+		or a
+		<button
+			class="btn btn-link p-0 align-baseline"
+			type="button"
+			onclick={() => handleSampleSelected(sampleMedicalCertificate)}
+		>
+			sample medical certificate
+		</button>.
+	</p>
 
 	{#if documentState.file}
 		<p class="mt-3 mb-0 text-center" aria-live="polite">
