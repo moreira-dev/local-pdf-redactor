@@ -23,7 +23,7 @@ export interface TextLine {
 	pieces: TextPiece[];
 }
 
-export interface Detection {
+export interface PIIDetection {
 	pageNumber: number;
 	lineIndex: number;
 	start: number;

@@ -61,6 +61,12 @@
 				</span>
 			{/if}
 		</p>
+		{#if doc.pages.length > 0}
+			<p class="mt-1 mb-0 text-center">
+				Found {doc.detections.length}
+				{doc.detections.length === 1 ? 'item' : 'items'} with personal information
+			</p>
+		{/if}
 	{/if}
 
 	{#if doc.error}
