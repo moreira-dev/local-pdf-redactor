@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
+	import Examples from '$lib/components/landing/Examples.svelte';
+	import Faq from '$lib/components/landing/Faq.svelte';
 	import PagePreview from '$lib/components/pdf/PagePreview.svelte';
 	import { DocumentState } from '$lib/state/document.svelte';
 
@@ -104,103 +106,129 @@
 	<title>Local PDF Redactor</title>
 </svelte:head>
 
-<section>
-	<h1 class="h2 mb-4 text-center">Choose a PDF to redact</h1>
-
-	<input bind:this={fileInput} class="visually-hidden" type="file" accept="application/pdf" onchange={handleFileSelected} />
-
-	<button
-		class:bg-primary-subtle={isDragging}
-		class:border-primary={isDragging}
-		class="w-100 rounded-3 border border-2 border-secondary-subtle p-5 text-center"
-		type="button"
-		onclick={() => fileInput.click()}
-		ondragover={(event) => {
-			event.preventDefault();
-			isDragging = true;
-		}}
-		ondragleave={() => (isDragging = false)}
-		ondrop={handleFileDropped}
-	>
-		<span class="d-block fs-4 fw-semibold">Drop a PDF here</span>
-		<span class="d-block mt-2 text-body-secondary">or choose a file from your device</span>
-	</button>
-
-	<p class="mt-2 mb-0 text-center text-body-secondary">
-		See an example with a
-		<button class="btn btn-link p-0 align-baseline" type="button" onclick={() => handleSampleSelected(samplePayslip)}>
-			sample payslip
-		</button>
-		or a
-		<button
-			class="btn btn-link p-0 align-baseline"
-			type="button"
-			onclick={() => handleSampleSelected(sampleMedicalCertificate)}
-		>
-			sample medical certificate
-		</button>.
-	</p>
-
-	{#if documentState.file}
-		<p class="mt-3 mb-0 text-center" aria-live="polite">
-			Selected: {documentState.file.name}
-			{#if documentState.pages.length > 0}
-				<span class="text-body-secondary">
-					({documentState.pages.length}
-					{documentState.pages.length === 1 ? 'page' : 'pages'})
-				</span>
-			{/if}
-		</p>
-		{#if documentState.isScanning}
-			<p class="mt-1 mb-0 text-center">
-				<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
-				Scanning for personal information. Found {documentState.detections.length} so far.
+<section class="pb-5">
+	<div class="container">
+		<div class="col-lg-8 mx-auto">
+			<h1>Redact your <span class="inverted px-3">PDF</span></h1>
+			<p class="lead mb-4">
+				This tool runs entirely on your device to protect your privacy.<br/>
+				Powered by <a href="https://huggingface.co/onnx-community/bert-small-pii-detection-ONNX/" target="_blank">lightweight AI models</a> that run directly in your browser,
+				it automatically finds and redacts personal details like names, addresses and bank numbers from your PDFs.
 			</p>
-		{:else if documentState.pages.length > 0}
-			<p class="mt-1 mb-0 text-center">
-				Found {documentState.detections.length}
-				{documentState.detections.length === 1 ? 'item' : 'items'} with personal information
-			</p>
-			<p class="mt-1 mb-0 small text-center text-body-secondary">
-				<span class="legend deterministic"></span> Deterministic
-				<span class="legend model ms-3"></span> Local AI model
-			</p>
-		{/if}
-	{/if}
 
-	{#if documentState.error}
-		<p class="alert alert-danger mt-3 mb-0" role="alert">{documentState.error}</p>
-	{/if}
+			<input bind:this={fileInput} class="visually-hidden" type="file" accept="application/pdf" onchange={handleFileSelected} />
 
-	{#if documentState.pages.length > 0}
-		<div class="mt-4">
-			{#each documentState.pages as page (page.pageNumber)}
-				<PagePreview
-					{page}
-					detections={documentState.detections.filter((detection) => detection.pageNumber === page.pageNumber)}
-				/>
-			{/each}
-		</div>
-
-		<div class="text-center">
 			<button
-				class="btn btn-dark btn-lg"
+				class:dragging={isDragging}
+				class="drop-zone surface w-100 border p-5 text-center"
 				type="button"
-				disabled={isRedacting || documentState.isScanning}
-				onclick={redactAndDownload}
+				onclick={() => fileInput.click()}
+				ondragover={(event) => {
+					event.preventDefault();
+					isDragging = true;
+				}}
+				ondragleave={() => (isDragging = false)}
+				ondrop={handleFileDropped}
 			>
-				{#if isRedacting}
-					<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
-					Building redacted PDF
-				{:else}
-					Redact and download
-				{/if}
+				<i class="bi bi-file-earmark-pdf d-block h1 mb-0" aria-hidden="true"></i>
+				<span class="d-block mt-2 lead fw-bold">Drop a document here or click to browse</span>
+				<span class="d-block mt-1 small text-body-secondary">Documents never leave your machine</span>
 			</button>
+
+			<p class="mt-4 mb-0 text-center text-body-secondary">
+				Try it with a
+				<button class="btn btn-link p-0 align-baseline" type="button" onclick={() => handleSampleSelected(samplePayslip)}>
+					sample payslip
+				</button>
+				or a
+				<button
+					class="btn btn-link p-0 align-baseline"
+					type="button"
+					onclick={() => handleSampleSelected(sampleMedicalCertificate)}
+				>
+					sample medical certificate
+				</button>.
+			</p>
+
+			{#if documentState.error}
+				<p class="alert alert-danger mt-4 mb-0" role="alert">{documentState.error}</p>
+			{/if}
+
+			{#if documentState.file}
+				<div class="card surface border mt-5">
+					<div class="card-header inverted d-flex justify-content-between gap-3" aria-live="polite">
+						<span class="text-break">{documentState.file.name}</span>
+						{#if documentState.pages.length > 0}
+							<span class="text-nowrap">
+								{documentState.pages.length}
+								{documentState.pages.length === 1 ? 'page' : 'pages'}
+							</span>
+						{/if}
+					</div>
+
+					{#if documentState.pages.length > 0}
+						<div class="card-body border-bottom">
+							{#if documentState.isScanning}
+								<p class="mb-0">
+									<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+									Scanning for personal information. Found {documentState.detections.length} so far.
+								</p>
+							{:else}
+								<p class="mb-1">
+									Found {documentState.detections.length}
+									{documentState.detections.length === 1 ? 'item' : 'items'} with personal information
+								</p>
+								<p class="mb-0 small fw-semibold text-body-secondary">
+									<span class="legend deterministic"></span> Deterministic
+									<span class="legend model ms-3"></span> Local AI model
+								</p>
+							{/if}
+						</div>
+
+						<div class="card-body text-center">
+							{#each documentState.pages as page (page.pageNumber)}
+								<PagePreview
+									{page}
+									detections={documentState.detections.filter((detection) => detection.pageNumber === page.pageNumber)}
+								/>
+							{/each}
+						</div>
+					{/if}
+				</div>
+
+				{#if documentState.pages.length > 0}
+					<button
+						class="btn btn-primary btn-lg w-100 mt-4"
+						type="button"
+						disabled={isRedacting || documentState.isScanning}
+						onclick={redactAndDownload}
+					>
+						{#if isRedacting}
+							<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+							Building redacted PDF
+						{:else}
+							Redact and download <i class="bi bi-download ms-2" aria-hidden="true"></i>
+						{/if}
+					</button>
+				{/if}
+			{/if}
 		</div>
-	{/if}
+	</div>
 </section>
 
+<Examples />
+
+<Faq />
+
 <style>
+	.drop-zone {
+		--bs-border-style: dashed;
+	}
+
+	.drop-zone.dragging {
+		background-color: var(--color-accent);
+	}
+
 	.legend {
 		display: inline-block;
 		width: 1em;

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import 'bootstrap/dist/css/bootstrap.min.css';
+	import 'bootstrap-icons/font/bootstrap-icons.min.css';
+	import '$lib/styles/theme.css';
 	import favicon from '$lib/assets/favicon.svg';
 
 	let { children } = $props();
@@ -9,16 +11,32 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<header class="border-bottom">
-	<div class="container py-3">
-		<a class="fs-4 fw-semibold link-body-emphasis text-decoration-none" href="/">Local PDF Redactor</a>
+<header class="container pt-4 pb-5">
+	<div class="col-lg-8 mx-auto">
+		<a class="logo d-inline-block border px-2 py-1 fw-bold text-decoration-none" href="/">
+			Local PDF Redactor
+		</a>
 	</div>
 </header>
 
-<main class="container py-5">
+<main>
 	{@render children()}
 </main>
 
-<footer class="border-top">
-	<div class="container py-4 small text-body-secondary">Local PDF Redactor</div>
+<footer class="inverted py-5">
+	<div class="container">
+		<div class="col-lg-8 mx-auto">
+			<a class="logo d-inline-block border px-2 py-1 fw-bold text-decoration-none" href="/">
+				Local PDF Redactor
+			</a>
+			<p class="mt-3 mb-0 small">&copy; 2026 Local PDF Redactor - Moreira.dev</p>
+		</div>
+	</div>
 </footer>
+
+<style>
+	.logo {
+		background-color: var(--color-accent);
+		color: var(--color-text);
+	}
+</style>

@@ -16,7 +16,9 @@ export default defineConfig({
 					'default-src': ['self'],
 					'script-src': ['self', 'blob:', 'wasm-unsafe-eval'],
 					'connect-src': ['self', 'https://huggingface.co', 'https://*.hf.co', 'https://cdn.jsdelivr.net'],
-					'img-src': ['self', 'data:', 'blob:']
+					'img-src': ['self', 'data:', 'blob:'],
+					'style-src': ['self', 'https://fonts.googleapis.com'],
+					'font-src': ['self', 'https://fonts.gstatic.com']
 				}
 			}
 		})

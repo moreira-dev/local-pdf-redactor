@@ -1,0 +1,95 @@
+:root {
+	/* https://coolors.co/f3f1f8-feefec-3083dc-c65b7c-f1f8f9 */
+	--color-text: #26363c;
+	--color-muted: #52636a;
+	--color-background: #FEEFEC;
+	--color-surface: #F3F1F8;
+	--color-primary: #B9DCDF;
+	--color-primary-strong: #54AAB6;
+	--color-accent: #B9DCDF;
+
+	--font-body: 'Lora', sans-serif;
+	--font-heading: 'IBM Plex Mono', Georgia, serif;
+
+	--font-size-small: 0.875rem;
+	--font-size-body: 1rem;
+	--font-size-large: 1.25rem;
+	--font-size-heading: 2rem;
+	--font-size-title: 3rem;
+
+	--border-width: 2px;
+	--border-radius: var(--border-width);
+
+	--bs-body-font-family: var(--font-body);
+	--bs-body-font-size: var(--font-size-body);
+	--bs-body-color: var(--color-text);
+	--bs-body-bg: var(--color-background);
+	--bs-secondary-color: var(--color-muted);
+	--bs-border-color: var(--color-text);
+	--bs-border-width: var(--border-width);
+	--bs-border-radius: var(--border-radius);
+	--bs-border-radius-lg: var(--border-radius);
+	--bs-link-color: var(--color-primary-strong);
+	--bs-link-hover-color: var(--color-text);
+}
+
+h1,
+.h1,
+h2,
+.h2 {
+	font-family: var(--font-heading);
+}
+
+h1,
+.h1 {
+	font-size: var(--font-size-title);
+}
+
+h2,
+.h2 {
+	font-size: var(--font-size-heading);
+}
+
+.lead {
+	font-size: var(--font-size-large);
+}
+
+.small,
+small {
+	font-size: var(--font-size-small);
+}
+
+.surface {
+	background-color: var(--color-surface);
+}
+
+.inverted {
+	background-color: var(--color-text);
+	color: var(--color-background);
+}
+
+.btn {
+	--bs-btn-focus-box-shadow: none;
+}
+
+.btn:focus-visible {
+	outline: var(--border-width) solid var(--color-text);
+	outline-offset: var(--border-width);
+}
+
+.btn-primary {
+	--bs-btn-color: var(--color-text);
+	--bs-btn-bg: var(--color-primary);
+	--bs-btn-border-color: var(--color-text);
+	--bs-btn-hover-color: var(--color-text);
+	--bs-btn-hover-bg: var(--color-primary-strong);
+	--bs-btn-hover-border-color: var(--color-text);
+	--bs-btn-active-color: var(--color-text);
+	--bs-btn-active-bg: var(--color-primary-strong);
+	--bs-btn-active-border-color: var(--color-text);
+	--bs-btn-disabled-color: var(--color-text);
+	--bs-btn-disabled-bg: var(--color-primary);
+	--bs-btn-disabled-border-color: var(--color-text);
+
+	font-weight: bold;
+}

@@ -26,7 +26,7 @@
 </script>
 
 <figure class="mb-4">
-	<div class="page border shadow-sm">
+	<div class="page border">
 		<canvas bind:this={canvas} aria-label="Page {page.pageNumber}"></canvas>
 
 		{#each detections as detection}
