@@ -4,6 +4,8 @@ A browser client-side tool for finding and redacting personal information in PDF
 
 Powered by <a href="https://huggingface.co/onnx-community/bert-small-pii-detection-ONNX/" target="_blank">lightweight AI models</a> that run directly in your browser, it automatically finds and redacts personal details like names, addresses and bank numbers from your PDFs.
 
+![Visual of the webapp](/docs/app-visual.png)
+
 ## Intent
 
 As users increasingly upload sensitive documents to online AI tools like ChatGPT, they often trade away their privacy to benefit from these services. This application provides a quick and easy way to redact personally identifiable information (PII) from PDFs, allowing users to reclaim their data privacy before sharing files online.
@@ -26,7 +28,7 @@ To use and develop this app you can run:
 docker compose up
 ```
 
-Open [http://localhost:5173](http://localhost:5173). 
+Open [http://localhost:5173](http://localhost:5173).
 
 To stop the server:
 
