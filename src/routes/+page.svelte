@@ -151,7 +151,12 @@
 				</span>
 			{/if}
 		</p>
-		{#if documentState.pages.length > 0}
+		{#if documentState.isScanning}
+			<p class="mt-1 mb-0 text-center">
+				<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+				Scanning for personal information. Found {documentState.detections.length} so far.
+			</p>
+		{:else if documentState.pages.length > 0}
 			<p class="mt-1 mb-0 text-center">
 				Found {documentState.detections.length}
 				{documentState.detections.length === 1 ? 'item' : 'items'} with personal information
@@ -174,7 +179,12 @@
 		</div>
 
 		<div class="text-center">
-			<button class="btn btn-dark btn-lg" type="button" disabled={isRedacting} onclick={redactAndDownload}>
+			<button
+				class="btn btn-dark btn-lg"
+				type="button"
+				disabled={isRedacting || documentState.isScanning}
+				onclick={redactAndDownload}
+			>
 				{#if isRedacting}
 					<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
 					Building redacted PDF

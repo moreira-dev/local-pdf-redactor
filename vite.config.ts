@@ -9,7 +9,22 @@ export default defineConfig({
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
-			adapter: adapter()
+			adapter: adapter(),
+			csp: {
+				mode: 'auto',
+				directives: {
+					'default-src': ['self'],
+					'script-src': ['self', 'blob:', 'wasm-unsafe-eval'],
+					'connect-src': ['self', 'https://huggingface.co', 'https://*.hf.co', 'https://cdn.jsdelivr.net'],
+					'img-src': ['self', 'data:', 'blob:']
+				}
+			}
 		})
-	]
+	],
+	build: {
+		target: 'esnext' // Required for WebGPU/WebNN
+	},
+	worker: {
+		format: 'es'
+	}
 });

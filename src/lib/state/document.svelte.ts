@@ -1,5 +1,5 @@
 import type { PDFPageProxy } from 'pdfjs-dist';
-import { findPIIByDeterministicRules } from '$lib/detection/rules';
+import { findPIIByDeterministicRules } from '$lib/detection/deterministic/finder';
 import { getTextLines } from '$lib/pdf/text';
 import type { PIIData } from '$lib/types';
 
@@ -7,6 +7,7 @@ export class DocumentState {
 	file = $state<File | null>(null);
 	pages = $state.raw<PDFPageProxy[]>([]);
 	detections = $state<PIIData[]>([]);
+	isScanning = $state(false);
 	error = $state<string | null>(null);
 
 	numPages = $state(0);
@@ -30,28 +31,52 @@ export class DocumentState {
 			const pdf = await loadPdf(file);
 
 			this.pages = await getPages(pdf);
-			this.detections = await this.detect(this.pages);
 		} catch {
 			this.error = 'The selected PDF could not be read.';
+			return;
 		}
+
+		await this.scan(file);
 	}
 
-	async detect(pages: PDFPageProxy[]): Promise<PIIData[]> {
-		const detections: PIIData[] = [];
+	/**
+	 * Use GenAI and deterministic rules to scan the PDF for personal information.
+	 * Takes some time to finish
+	 */
+	async scan(file: File) {
+		this.isScanning = true;
 
-		for (const page of pages) {
-			const lines = await getTextLines(page);
+		try {
+			const { findPIIByModel } = await import('$lib/detection/genai/finder');
 
-			detections.push(...findPIIByDeterministicRules(lines));
+			for (const page of this.pages) {
+				const lines = await getTextLines(page);
+				const ruleDetections = findPIIByDeterministicRules(lines);
+				const modelDetections = await findPIIByModel(lines);
+
+				if (this.file !== file) {
+					// If the user selected a new PDF we should abort this scan
+					return;
+				}
+
+				this.detections.push(...ruleDetections, ...modelDetections);
+			}
+		} catch {
+			if (this.file === file) {
+				this.error = 'The PDF could not be scanned for personal information.';
+			}
+		} finally {
+			if (this.file === file) {
+				this.isScanning = false;
+			}
 		}
-
-		return detections;
 	}
 
 	reset() {
 		this.file = null;
 		this.pages = [];
 		this.detections = [];
+		this.isScanning = false;
 		this.error = null;
 	}
 }

@@ -74,6 +74,9 @@ function isAlreadyFound(foundPIIList: PIIData[], firstCharacterPosition: number,
 	return false;
 }
 
+/**
+ * Get all PII matches for a given line.
+ */
 function findPIIInLine(line: TextLine, lineIndex: number): PIIData[] {
 	const foundPIIList: PIIData[] = [];
 

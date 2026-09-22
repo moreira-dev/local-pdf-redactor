@@ -40,3 +40,9 @@ export interface PIIData {
 	text: string;
 	highlightArea: Box;
 }
+
+
+export interface ModelToken {
+	word: string; // e.g. "john"
+	entity: string; // e.g. "B-PERSON"
+}
