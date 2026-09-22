@@ -1,4 +1,4 @@
-import { tagLines } from '$lib/detection/genai/classifier';
+import { tagLines } from '$lib/detection/ai/classifier';
 import { createBox } from '$lib/pdf/boxes';
 import type { ModelToken, PIIData, TextLine } from '$lib/types';
 
@@ -82,6 +82,7 @@ function addPII(foundPIIList: PIIData[], line: TextLine, lineIndex: number, cate
 		category,
 		text,
 		highlightArea,
+		foundBy: 'model',
 	});
 }
 
@@ -129,7 +130,7 @@ function findPIIInLine(line: TextLine, lineIndex: number, tokens: ModelToken[]):
 }
 
 /**
- * Checks all lines for PII using GenAI models.
+ * Checks all lines for PII using AI models.
  *
  * Example input:  [{ text: "Employee: John Doe", ... }, { text: "Pay date: 05/08/2026", ... }]
  * Example output: [{ lineIndex: 0, category: "PERSON", text: "John Doe", ... },

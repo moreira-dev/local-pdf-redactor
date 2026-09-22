@@ -30,7 +30,7 @@
 		<canvas bind:this={canvas} aria-label="Page {page.pageNumber}"></canvas>
 
 		{#each detections as detection}
-			<Highlight area={detection.highlightArea} {viewport} />
+			<Highlight area={detection.highlightArea} {viewport} foundBy={detection.foundBy} />
 		{/each}
 	</div>
 	<figcaption class="mt-2 small text-body-secondary">Page {page.pageNumber}</figcaption>

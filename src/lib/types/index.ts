@@ -31,6 +31,9 @@ export interface Box {
 	height: number;
 }
 
+
+export type FoundBy = 'deterministic' | 'model';
+
 export interface PIIData {
 	pageNumber: number;
 	lineIndex: number;
@@ -39,6 +42,7 @@ export interface PIIData {
 	category: string;
 	text: string;
 	highlightArea: Box;
+	foundBy: FoundBy;
 }
 
 

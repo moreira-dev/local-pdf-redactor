@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageViewport } from 'pdfjs-dist';
-	import type { Box } from '$lib/types';
+	import type { Box, FoundBy } from '$lib/types';
 
-	let { area, viewport }: { area: Box; viewport: PageViewport } = $props();
+	let { area, viewport, foundBy }: { area: Box; viewport: PageViewport; foundBy: FoundBy } = $props();
 
 	const position = $derived(toPagePercentages(area, viewport));
 
@@ -28,7 +28,7 @@
 </script>
 
 <div
-	class="highlight"
+	class="highlight {foundBy}"
 	style:left="{position.left}%"
 	style:top="{position.top}%"
 	style:width="{position.width}%"
@@ -38,7 +38,15 @@
 <style>
 	.highlight {
 		position: absolute;
+	}
+
+	.deterministic {
 		border: 2px solid var(--bs-warning);
 		background-color: rgba(var(--bs-warning-rgb), 0.35);
+	}
+
+	.model {
+		border: 2px solid var(--bs-primary);
+		background-color: rgba(var(--bs-primary-rgb), 0.25);
 	}
 </style>

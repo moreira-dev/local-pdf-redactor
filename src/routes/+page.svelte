@@ -161,6 +161,10 @@
 				Found {documentState.detections.length}
 				{documentState.detections.length === 1 ? 'item' : 'items'} with personal information
 			</p>
+			<p class="mt-1 mb-0 small text-center text-body-secondary">
+				<span class="legend deterministic"></span> Deterministic
+				<span class="legend model ms-3"></span> Local AI model
+			</p>
 		{/if}
 	{/if}
 
@@ -195,3 +199,22 @@
 		</div>
 	{/if}
 </section>
+
+<style>
+	.legend {
+		display: inline-block;
+		width: 1em;
+		height: 1em;
+		vertical-align: -0.125em;
+	}
+
+	.legend.deterministic {
+		border: 2px solid var(--bs-warning);
+		background-color: rgba(var(--bs-warning-rgb), 0.35);
+	}
+
+	.legend.model {
+		border: 2px solid var(--bs-primary);
+		background-color: rgba(var(--bs-primary-rgb), 0.25);
+	}
+</style>

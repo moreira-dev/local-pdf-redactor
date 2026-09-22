@@ -1,5 +1,4 @@
 import type { PDFPageProxy } from 'pdfjs-dist';
-import { findPIIByDeterministicRules } from '$lib/detection/deterministic/finder';
 import { getTextLines } from '$lib/pdf/text';
 import type { PIIData } from '$lib/types';
 
@@ -40,26 +39,25 @@ export class DocumentState {
 	}
 
 	/**
-	 * Use GenAI and deterministic rules to scan the PDF for personal information.
+	 * Use AI and deterministic rules to scan the PDF for personal information.
 	 * Takes some time to finish
 	 */
 	async scan(file: File) {
 		this.isScanning = true;
 
 		try {
-			const { findPIIByModel } = await import('$lib/detection/genai/finder');
+			const { findPII } = await import('$lib/detection/detect');
 
 			for (const page of this.pages) {
 				const lines = await getTextLines(page);
-				const ruleDetections = findPIIByDeterministicRules(lines);
-				const modelDetections = await findPIIByModel(lines);
+				const pageDetections = await findPII(lines);
 
 				if (this.file !== file) {
 					// If the user selected a new PDF we should abort this scan
 					return;
 				}
 
-				this.detections.push(...ruleDetections, ...modelDetections);
+				this.detections.push(...pageDetections);
 			}
 		} catch {
 			if (this.file === file) {
