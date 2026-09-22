@@ -49,6 +49,24 @@ const rules: Rule[] = [
 	{ category: 'FINANCIAL', pattern: /(?<=\bBSB\b[:#\s]*)\d{3}[\s-]?\d{3}(?!\d)/gi },
 
 	/**
+	 * Tax File Numbers (8 or 9 digits) strictly preceded by a 'TFN' or 'Tax File Number' label.
+	 * Matches: '123 456 789' in 'Tax File Number: 123 456 789', matches '12345678' in 'TFN 12345678'
+	 */
+	{ category: 'TAX_FILE_NUMBER', pattern: /(?<=\b(?:TFN|Tax File Number)\b[:#\s]*)\d{3}[\s-]?\d{3}[\s-]?\d{2,3}(?!\d)/gi },
+
+	/**
+	 * Employee and member numbers strictly preceded by an 'Employee No' or 'Member No' label.
+	 * Matches: '004521' in 'Employee No: 004521', matches '987654321' in 'Member No. 987654321'
+	 */
+	{ category: 'ID_NUMBER', pattern: /(?<=\b(?:Employee|Member) No\.?[:#\s]*)\d+/gi },
+
+	/**
+	 * Bank account numbers strictly preceded by an 'Account:' label.
+	 * Matches: '12345678' in 'Account: 12345678', matches '1234 5678' in 'Account: 1234 5678'
+	 */
+	{ category: 'FINANCIAL', pattern: /(?<=\bAccount:\s*)\d(?:[\s-]?\d)*/gi },
+
+	/**
 	 * BSB numbers hyphenated.
 	 * Matches: '062-123', '999-999'
 	 */
