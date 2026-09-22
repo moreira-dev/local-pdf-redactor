@@ -1,4 +1,4 @@
-import { pipeline } from '@huggingface/transformers';
+import {type DeviceType, pipeline} from '@huggingface/transformers';
 import type { TokenClassificationPipeline } from '@huggingface/transformers';
 import type { ModelToken } from '$lib/types';
 
@@ -11,8 +11,14 @@ let classifierModelLoading: Promise<TokenClassificationPipeline> | undefined;
  * Configures and calls the transformers.js pipeline
  */
 async function createClassifier(): Promise<TokenClassificationPipeline> {
-	// Check if browser supports webgpu
-	const device = (await navigator.gpu?.requestAdapter()) ? 'webgpu' : 'wasm';
+
+	let device : DeviceType = 'wasm';
+
+	if ('ml' in navigator) {
+		device = 'webnn';
+	} else if (navigator.gpu && await navigator.gpu.requestAdapter()) {
+		device = 'webgpu';
+	}
 
 	// See https://huggingface.co/docs/transformers.js/pipelines
 	return pipeline('token-classification', PII_MODEL_ID, { dtype: DTYPE, device });
