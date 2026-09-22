@@ -14,7 +14,7 @@ export default defineConfig({
 				mode: 'auto',
 				directives: {
 					'default-src': ['self'],
-					'script-src': ['self', 'blob:', 'wasm-unsafe-eval'],
+					'script-src': ['self', 'blob:', 'unsafe-eval'],
 					'connect-src': ['self', 'https://huggingface.co', 'https://*.hf.co', 'https://cdn.jsdelivr.net'],
 					'img-src': ['self', 'data:', 'blob:'],
 					'style-src': ['self', 'https://fonts.googleapis.com'],

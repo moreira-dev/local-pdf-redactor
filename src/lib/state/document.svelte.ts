@@ -59,10 +59,8 @@ export class DocumentState {
 
 				this.detections.push(...pageDetections);
 			}
-		} catch {
-			if (this.file === file) {
-				this.error = 'The PDF could not be scanned for personal information.';
-			}
+		} catch (error) {
+			this.error = 'The PDF could not be scanned for personal information: ' + (error instanceof Error ? `: ${error.message}` : '');
 		} finally {
 			if (this.file === file) {
 				this.isScanning = false;
