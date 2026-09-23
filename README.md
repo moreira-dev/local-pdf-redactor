@@ -4,6 +4,8 @@ A browser client-side tool for finding and redacting personal information in PDF
 
 Powered by <a href="https://huggingface.co/onnx-community/bert-small-pii-detection-ONNX/" target="_blank">lightweight AI models</a> that run directly in your browser, it automatically finds and redacts personal details like names, addresses and bank numbers from your PDFs.
 
+Website: [https://redactor.moreira.dev/](https://redactor.moreira.dev/)
+
 ![Visual of the webapp](/docs/app-visual.png)
 
 ## Intent
